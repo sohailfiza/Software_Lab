@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const data = [
   {
@@ -33,6 +34,8 @@ const data = [
 ];
 
 const Onboarding = () => {
+  const navigation = useNavigation();
+
   const scrollX = useRef(new Animated.Value(0)).current;
   const {width: windowWidth} = useWindowDimensions();
 
@@ -105,7 +108,10 @@ const Onboarding = () => {
         {/* <TouchableOpacity style={styles.signUpButton}>
           <Text style={styles.signUpButtonText}>Join the movement!</Text>
         </TouchableOpacity> */}
-        <Text style={styles.loginText}>Login</Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -174,12 +180,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 70,
+    height: 80,
     marginBottom: 100,
     width: '100%',
     backgroundColor: 'white',
     position: 'absolute',
     top: 550,
+    zIndex: -1,
   },
   content: {
     backgroundColor: '#FFFFFF',
