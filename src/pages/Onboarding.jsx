@@ -62,12 +62,7 @@ const Onboarding = () => {
           )}
           scrollEventThrottle={1}>
           {data.map(({title, text, image}, imageIndex) => (
-            <View
-              style={{
-                width: windowWidth,
-                height: 400,
-              }}
-              key={imageIndex}>
+            <View style={[styles.slide, {width: windowWidth}]} key={imageIndex}>
               <ImageBackground
                 source={{uri: image}}
                 style={styles.card}></ImageBackground>
@@ -101,14 +96,10 @@ const Onboarding = () => {
       <View style={styles.content}>
         <Animated.View
           style={[styles.signUpButton, {backgroundColor: buttonColor}]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
             <Text style={styles.signUpButtonText}>Join the movement!</Text>
           </TouchableOpacity>
         </Animated.View>
-        {/* <TouchableOpacity style={styles.signUpButton}>
-          <Text style={styles.signUpButtonText}>Join the movement!</Text>
-        </TouchableOpacity> */}
-
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
@@ -121,12 +112,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   scrollContainer: {
     width: '100%',
     height: 800,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  slide: {
+    height: 400,
   },
   card: {
     flex: 1,
@@ -164,8 +159,8 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     fontFamily: 'Be Vietnam',
-    Size: 14,
-    LineHeight: 20.45,
+    fontSize: 14,
+    lineHeight: 20.45,
     padding: 20,
     paddingHorizontal: 40,
   },

@@ -26,7 +26,7 @@ function Login() {
         <Text style={styles.message}>Welcome back!</Text>
         <View style={styles.newRegister}>
           <Text style={{color: 'grey'}}>New here? </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
             <Text style={{color: '#D5715B'}}>Create account</Text>
           </TouchableOpacity>
         </View>
