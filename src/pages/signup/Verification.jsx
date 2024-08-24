@@ -7,6 +7,7 @@ import CameraLogo from '../../assets/svg/camera.svg';
 import CloseLogo from '../../assets/svg/close.svg';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Verification() {
   const navigation = useNavigation();
@@ -18,16 +19,23 @@ function Verification() {
         type: [DocumentPicker.types.allFiles],
       });
 
-      console.log('pickedFile', pickedFile);
-
       const localFilePath = `${RNFS.DocumentDirectoryPath}/${pickedFile.name}`;
-
       const fileContent = await RNFS.readFile(pickedFile.uri, 'base64');
-
       await RNFS.writeFile(localFilePath, fileContent, 'base64');
-      console.log('File saved to', localFilePath);
 
       setSelectedFile(pickedFile);
+
+      // Save the document path to AsyncStorage
+      const existingData = await AsyncStorage.getItem('newUserData');
+      const jsonValue = existingData != null ? JSON.parse(existingData) : {};
+
+      const updatedData = {
+        ...jsonValue,
+        registration_proof: pickedFile.name,
+      };
+
+      await AsyncStorage.setItem('newUserData', JSON.stringify(updatedData));
+      console.log('File saved to', localFilePath);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log('User canceled the picker', err);
@@ -60,9 +68,7 @@ function Verification() {
           </Text>
           <TouchableOpacity
             style={styles.cameraButton}
-            onPress={async () => {
-              uploadFileOnPressHandler(true);
-            }}>
+            onPress={uploadFileOnPressHandler}>
             <CameraLogo />
           </TouchableOpacity>
         </View>
@@ -100,6 +106,7 @@ function Verification() {
             <ArrowLeftLogo />
           </TouchableOpacity>
           <TouchableOpacity
+            // onPress={handleContinue}
             onPress={() => navigation.navigate('BusinessHours')}
             style={styles.continueButton}>
             <Text style={styles.continueText}>Continue</Text>

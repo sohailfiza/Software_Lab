@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DoneTickLogo from '../../assets/svg/doneTick.svg';
+import {useNavigation} from '@react-navigation/native';
 
 function ForgetPassword() {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -27,7 +29,9 @@ function ForgetPassword() {
         </Text>
       </View>
       <View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Login')}>
           <Text style={styles.buttonText}>Got it!</Text>
         </TouchableOpacity>
       </View>

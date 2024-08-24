@@ -5,10 +5,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
 
 function BusinessHours() {
   const days = [
@@ -20,6 +22,7 @@ function BusinessHours() {
     {full: 'Saturday', short: 'sat'},
     {full: 'Sunday', short: 'sun'},
   ];
+
   const timings = [
     '8:00am - 10:00am',
     '10:00am - 1:00pm',
@@ -53,6 +56,31 @@ function BusinessHours() {
   }, []);
 
   const navigation = useNavigation();
+
+  const handleContinue = async () => {
+    try {
+      // Retrieve existing data
+      const existingData = await AsyncStorage.getItem('newUserData');
+      const jsonValue = existingData != null ? JSON.parse(existingData) : {};
+
+      // Update the business_hours
+      const updatedData = {
+        ...jsonValue,
+        business_hours: selectedHours,
+      };
+
+      // Save the updated data back to AsyncStorage
+      await AsyncStorage.setItem('newUserData', JSON.stringify(updatedData));
+
+      // Log the saved data
+      console.log('Updated User Data:', updatedData);
+
+      // Navigate to the next screen
+      navigation.navigate('Confirmation', {selectedHours});
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save business hours');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,7 +127,7 @@ function BusinessHours() {
           <ArrowLeftLogo />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Confirmation')}
+          onPress={handleContinue}
           style={styles.continueButton}>
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>

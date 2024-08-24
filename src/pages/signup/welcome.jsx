@@ -34,6 +34,7 @@ function Welcome() {
           city: '',
           state: '',
           zip_code: '',
+          registration_proof: '',
           registration_hours: '',
           business_hours: '',
           device_token: '',
