@@ -15,19 +15,25 @@ import {useNavigation} from '@react-navigation/native';
 const data = [
   {
     title: 'Quality',
-    text: 'Sell your farm fresh products directly to consumers, cutting out the middleman and reducing emissions of the global supply chain.',
+    textOne: 'Sell your farm fresh products directly to',
+    textTwo: 'consumers, cutting out the middleman and',
+    textThree: 'reducing emissions of the global supply chain.',
     image: 'https://i.postimg.cc/SsNzn25t/Onboarding-1.png',
     color: '#5EA25F',
   },
   {
     title: 'Convenient',
-    text: 'Our team of delivery drivers will make sure your orders are picked up on time and promptly delivered to your customers.',
+    textOne: 'Our team of delivery drivers will make sure',
+    textTwo: 'your orders are picked up on time and',
+    textThree: 'and promptly delivered to your customers.',
     image: 'https://i.postimg.cc/kX8F38dx/Onboarding-2.png',
     color: '#D5715B',
   },
   {
     title: 'Local',
-    text: 'We love the earth and know you do too! Join us in reducing our local carbon footprint one order at a time.',
+    textOne: 'We love the earth and know you do too! Join us',
+    textTwo: 'in reducing our local carbon footprint one order',
+    textThree: 'at a time.',
     image: 'https://i.postimg.cc/7LPg2WJV/Onboarding-3.png',
     color: '#F8C569',
   },
@@ -35,7 +41,6 @@ const data = [
 
 const Onboarding = () => {
   const navigation = useNavigation();
-
   const scrollX = useRef(new Animated.Value(0)).current;
   const {width: windowWidth} = useWindowDimensions();
 
@@ -61,17 +66,23 @@ const Onboarding = () => {
             {useNativeDriver: false},
           )}
           scrollEventThrottle={1}>
-          {data.map(({title, text, image}, imageIndex) => (
-            <View style={[styles.slide, {width: windowWidth}]} key={imageIndex}>
-              <ImageBackground
-                source={{uri: image}}
-                style={styles.card}></ImageBackground>
-              <View style={styles.textContainer}>
-                <Text style={styles.heading}>{title}</Text>
-                <Text style={styles.text}>{text}</Text>
+          {data.map(
+            ({title, textOne, textTwo, textThree, image}, imageIndex) => (
+              <View
+                style={[styles.slide, {width: windowWidth}]}
+                key={imageIndex}>
+                <ImageBackground
+                  source={{uri: image}}
+                  style={styles.card}></ImageBackground>
+                <View style={styles.textContainer}>
+                  <Text style={styles.heading}>{title}</Text>
+                  <Text style={styles.text}>{textOne}</Text>
+                  <Text style={styles.text}>{textTwo}</Text>
+                  <Text style={styles.text}>{textThree}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            ),
+          )}
         </ScrollView>
         <View style={styles.indicatorContainer}>
           {data.map((_, imageIndex) => {
@@ -139,9 +150,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     position: 'absolute',
-    top: 400,
+    top: 410,
     width: '100%',
-    height: 160,
+    height: 260,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
   },
@@ -154,6 +165,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 35.06,
     textAlign: 'center',
+    paddingBottom: 40,
+    paddingTop: 10,
   },
   text: {
     color: 'black',
@@ -161,14 +174,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Be Vietnam',
     fontSize: 14,
     lineHeight: 20.45,
-    padding: 20,
-    paddingHorizontal: 40,
+    paddingHorizontal: 30,
   },
   normalDot: {
     height: 8,
-    width: 8,
     borderRadius: 4,
-    backgroundColor: 'silver',
+    backgroundColor: 'black',
     marginHorizontal: 4,
   },
   indicatorContainer: {
@@ -180,18 +191,18 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     position: 'absolute',
-    top: 550,
-    zIndex: -1,
+    top: 600,
+    zIndex: 1,
+    // backgroundColor: 'red',
   },
   content: {
     backgroundColor: '#FFFFFF',
     position: 'absolute',
     width: '100%',
     height: 200,
-    top: 620,
+    top: 680,
   },
   signUpButton: {
-    backgroundColor: '#5EA25F',
     width: 236,
     height: 60,
     borderRadius: 50,
@@ -205,7 +216,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   loginText: {
-    color: '#261C12',
+    color: 'black',
     textAlign: 'center',
     marginTop: 20,
     textDecorationLine: 'underline',

@@ -52,10 +52,10 @@ function Welcome() {
           <PeopleLogo />
           <TextInput
             style={styles.inputBox}
-            onChangeText={setEmail}
-            value={email}
+            onChangeText={setName}
+            value={name}
             placeholder="Full Name"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
@@ -65,43 +65,45 @@ function Welcome() {
             onChangeText={setEmail}
             value={email}
             placeholder="Email Address"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
           <PhoneLogo />
           <TextInput
             style={styles.inputBox}
-            onChangeText={setEmail}
-            value={email}
+            onChangeText={setNumber}
+            value={number}
             placeholder="Phone Number"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
           <PasswordLogo />
           <TextInput
             style={styles.inputBox}
-            onChangeText={setEmail}
-            value={email}
+            onChangeText={setPassword}
+            value={password}
             placeholder="Password"
-            placeholderTextColor={'#0000004D'}
-            secureTextEntry={true}
+            placeholderTextColor="#0000004D"
+            secureTextEntry
           />
         </View>
         <View style={styles.inputBoxContainer}>
           <PasswordLogo />
           <TextInput
             style={styles.inputBox}
-            onChangeText={setEmail}
-            value={email}
+            onChangeText={setConfirmPassword}
+            value={confirmPassword}
             placeholder="Re-Enter Password"
-            placeholderTextColor={'#0000004D'}
-            secureTextEntry={true}
+            placeholderTextColor="#0000004D"
+            secureTextEntry
           />
         </View>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -148,7 +150,6 @@ const styles = StyleSheet.create({
     color: '#261C12',
   },
   authIcons: {
-    display: 'flex',
     position: 'absolute',
     top: 200,
     width: '100%',
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   form: {
-    display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 310,
@@ -198,9 +198,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    alignContent: 'center',
     paddingHorizontal: 25,
-    marginTop: 15,
+    marginTop: 105,
   },
   loginButton: {
     alignItems: 'center',

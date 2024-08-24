@@ -24,23 +24,13 @@ function FarmInfo() {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [pinCode, setPinCode] = useState('');
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
-        <Text style={[styles.title, {marginLeft: 30}]}>FarmerEats</Text>
-        <Text
-          style={{
-            color: 'grey',
-            marginLeft: 30,
-            fontSize: 14,
-            fontWeight: '500',
-            fontFamily: 'Be Vietnam',
-            lineHeight: 20.45,
-            marginTop: 40,
-          }}>
-          Signup 2 of 4
-        </Text>
-        <Text style={[styles.message, {marginLeft: 30}]}>Farm Info</Text>
+        <Text style={styles.title}>FarmerEats</Text>
+        <Text style={styles.subTitle}>Signup 2 of 4</Text>
+        <Text style={styles.message}>Farm Info</Text>
       </View>
       <View style={styles.form}>
         <View style={styles.inputBoxContainer}>
@@ -50,7 +40,7 @@ function FarmInfo() {
             placeholder="Business Name"
             onChangeText={setBusinessName}
             value={businessName}
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
@@ -60,7 +50,7 @@ function FarmInfo() {
             onChangeText={setInformalName}
             value={informalName}
             placeholder="Informal Name"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
@@ -70,7 +60,7 @@ function FarmInfo() {
             onChangeText={setAddress}
             value={address}
             placeholder="Street Address"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
         <View style={styles.inputBoxContainer}>
@@ -80,80 +70,40 @@ function FarmInfo() {
             value={city}
             onChangeText={setCity}
             placeholder="City"
-            placeholderTextColor={'#0000004D'}
+            placeholderTextColor="#0000004D"
           />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginHorizontal: 30,
-            width: '100%',
-            justifyContent: 'space-around',
-            // backgroundColor: 'red',
-          }}>
-          <View
-            style={[styles.inputBoxContainer, {width: '35%', marginLeft: 15}]}>
+        <View style={styles.rowContainer}>
+          <View style={[styles.inputBoxContainer, styles.stateBox]}>
             <TextInput
               style={styles.inputBox}
               onChangeText={setState}
               value={state}
               placeholder="State"
-              placeholderTextColor={'#0000004D'}
+              placeholderTextColor="#0000004D"
             />
             <DownArrowLogo />
           </View>
-          <View
-            style={[styles.inputBoxContainer, {width: '52%', marginRight: 15}]}>
+          <View style={[styles.inputBoxContainer, styles.zipCodeBox]}>
             <TextInput
               style={styles.inputBox}
               onChangeText={setPinCode}
               value={pinCode}
               placeholder="Enter Zipcode"
-              placeholderTextColor={'#0000004D'}
+              placeholderTextColor="#0000004D"
             />
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            alignContent: 'center',
-            paddingHorizontal: 25,
-            marginTop: 15,
-            // backgroundColor: 'red',
-          }}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Welcome')}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-
-              //   backgroundColor: 'blue',
-            }}>
+            style={styles.backButton}>
             <ArrowLeftLogo />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Verification')}
-            style={[
-              styles.button,
-              {
-                borderRadius: 50,
-                backgroundColor: '#D5715B',
-                alignItems: 'center',
-                justifyContent: 'center',
-              },
-            ]}>
-            <Text
-              style={{
-                color: 'white',
-                fontWeight: '500',
-                fontFamily: 'Be Vietnam',
-                fontSize: 18,
-                lineHeight: 26.3,
-              }}>
-              Continue
-            </Text>
+            style={styles.continueButton}>
+            <Text style={styles.continueButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -169,6 +119,7 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     alignItems: 'flex-start',
     width: '100%',
+    paddingHorizontal: 30,
   },
   title: {
     fontFamily: 'Be Vietnam',
@@ -178,6 +129,14 @@ const styles = StyleSheet.create({
     lineHeight: 23.38,
     color: '#000',
   },
+  subTitle: {
+    color: 'grey',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: 'Be Vietnam',
+    lineHeight: 20.45,
+    marginTop: 40,
+  },
   message: {
     fontFamily: 'Be Vietnam',
     fontWeight: '700',
@@ -185,22 +144,11 @@ const styles = StyleSheet.create({
     lineHeight: 46.75,
     color: '#261C12',
   },
-  newRegister: {
-    flexDirection: 'row',
-    fontFamily: 'Be Vietnam',
-    marginTop: 20,
-    fontWeight: '500',
-    fontSize: 14,
-    lineHeight: 20.45,
-  },
   form: {
-    display: 'flex',
     alignItems: 'center',
     position: 'absolute',
     top: 202,
     width: '100%',
-    // borderColor: 'red',
-    // borderWidth: 1,
   },
   inputBoxContainer: {
     width: '90%',
@@ -214,47 +162,50 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     backgroundColor: '#EEEDEC',
     height: 48,
     borderRadius: 8,
     paddingHorizontal: 15,
-    marginVertical: 15,
   },
-  button: {
-    width: '65%',
+  rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#EEEDEC',
-    height: 48,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginVertical: 200,
-  },
-  authIcons: {
-    display: 'flex',
-    position: 'absolute',
-    top: 200,
+    marginHorizontal: 30,
     width: '100%',
-    paddingHorizontal: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // paddingHorizontal: 30,
-    // backgroundColor: 'blue',
-    // borderColor: 'red',
-    // borderWidth: 1,
+    justifyContent: 'space-around',
   },
-  icon: {
-    width: 96,
-    height: 52,
-    borderRadius: 50,
-    borderColor: '#00000033',
-    borderWidth: 1,
-    justifyContent: 'center',
+  stateBox: {
+    width: '35%',
+    marginLeft: 15,
+  },
+  zipCodeBox: {
+    width: '52%',
+    marginRight: 15,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 25,
+    marginTop: 210,
+  },
+  backButton: {
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueButton: {
+    borderRadius: 50,
+    backgroundColor: '#D5715B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '65%',
+    height: 48,
+  },
+  continueButtonText: {
+    color: 'white',
+    fontWeight: '500',
+    fontFamily: 'Be Vietnam',
+    fontSize: 18,
+    lineHeight: 26.3,
   },
 });
 
