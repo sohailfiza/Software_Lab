@@ -1,12 +1,61 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+  Alert,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
 import {useNavigation} from '@react-navigation/native';
 import CameraLogo from '../../assets/svg/camera.svg';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 function Verification() {
   const navigation = useNavigation();
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+
+      const fileSize = await RNFS.stat(result.uri);
+      const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
+
+      if (fileSize.size > maxSize) {
+        Alert.alert(
+          'File Size Limit Exceeded',
+          'Please select a file up to 5 MB.',
+        );
+      } else {
+        setSelectedFile(result);
+      }
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the document picker
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const uploadFile = () => {
+    if (selectedFile) {
+      // File upload logic goes here
+      Alert.alert(
+        'File Uploaded',
+        `File ${selectedFile.name} has been uploaded successfully.`,
+      );
+    } else {
+      Alert.alert('No File Selected', 'Please select a file to upload.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,7 +66,7 @@ function Verification() {
         </Text>
         <Text style={[styles.message, styles.marginLeft30]}>Verification</Text>
         <Text style={[styles.description, styles.marginLeft30]}>
-          Attached proof of Department of Agriculture registrations i.e. Florida
+          Attach proof of Department of Agriculture registrations i.e. Florida
           Fresh, USDA Approved, USDA Organic
         </Text>
       </View>
@@ -29,6 +78,11 @@ function Verification() {
           <TouchableOpacity style={styles.cameraButton}>
             <CameraLogo />
           </TouchableOpacity>
+        </View>
+        <View>
+          <Button title="Pick Document" onPress={pickDocument} />
+          {selectedFile && <Text>Selected File: {selectedFile.name}</Text>}
+          <Button title="Upload File" onPress={uploadFile} />
         </View>
         <View style={styles.navigationContainer}>
           <TouchableOpacity

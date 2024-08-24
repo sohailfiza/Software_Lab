@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -15,8 +16,57 @@ import PasswordLogo from '../../assets/svg/password.svg';
 import PeopleLogo from '../../assets/svg/people.svg';
 import PhoneLogo from '../../assets/svg/phone.svg';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Welcome() {
+  const saveData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        'newUserData',
+        JSON.stringify({
+          full_name: name,
+          email,
+          phone: number,
+          password,
+          business_name: null,
+          informal_name: null,
+          address: null,
+          city: null,
+          state: null,
+          zip_code: null,
+          registration_hours: null,
+          business_hours: null,
+          device_token: null,
+          type: 'email/facebook/google/apple',
+          social_id: null,
+        }),
+      );
+      console.log('Data successfully saved');
+    } catch (e) {
+      console.log('Failed to save data:', e);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('userData');
+      if (jsonValue != null) {
+        const data = JSON.parse(jsonValue);
+        setName(data.name);
+        setEmail(data.email);
+        setNumber(data.number);
+        setPassword(data.password);
+        setConfirmPassword(data.confirmPassword);
+        console.log('Data loaded');
+      }
+    } catch (e) {
+      console.log('Failed to load data:', e);
+    }
+  };
+  useEffect(() => {
+    loadData();
+  }, []);
+
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
@@ -24,6 +74,56 @@ function Welcome() {
   const [number, setNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const validateEmail = email => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhoneNumber = number => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(number);
+  };
+
+  const validatePassword = password => {
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validation = () => {
+    if (!name.trim()) {
+      Alert.alert('Please check', 'Name is required');
+      console.log('Name is required');
+      return false;
+    }
+    if (!validateEmail(email)) {
+      Alert.alert('Please check', 'Invalid email format');
+      console.log('Invalid email format');
+      return false;
+    }
+    if (!validatePhoneNumber(number)) {
+      Alert.alert('Please check', 'Phone number should be 10 digits');
+      console.log('Phone number should be 10 digits');
+      return false;
+    }
+    if (!validatePassword(password)) {
+      Alert.alert(
+        'Please check',
+        'Password should be at least 8 characters long, contain uppercase, lowercase, number, and special character',
+      );
+      console.log(
+        'Password should be at least 8 characters long, contain uppercase, lowercase, number, and special character',
+      );
+      return false;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('Please check', 'Passwords do not match');
+      console.log('Passwords do not match');
+      return false;
+    }
+    return true;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -107,7 +207,12 @@ function Welcome() {
             <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('FarmInfo')}
+            onPress={() => {
+              if (validation()) {
+                saveData();
+                navigation.navigate('FarmInfo');
+              }
+            }}
             style={styles.continueButton}>
             <Text style={styles.continueButtonText}>Continue</Text>
           </TouchableOpacity>

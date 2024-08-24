@@ -18,6 +18,28 @@ import {useNavigation} from '@react-navigation/native';
 function FarmInfo() {
   const navigation = useNavigation();
 
+  const saveFarmInfo = async () => {
+    try {
+      const existingData = await AsyncStorage.getItem('newUserData');
+      const jsonValue = existingData != null ? JSON.parse(existingData) : {};
+
+      const updatedData = {
+        ...jsonValue,
+        business_name: businessName,
+        informal_name: informalName,
+        address,
+        city,
+        state,
+        zip_code: pinCode,
+      };
+
+      await AsyncStorage.setItem('newUserData', JSON.stringify(updatedData));
+      console.log('Farm Info successfully saved');
+    } catch (e) {
+      console.log('Failed to save farm info:', e);
+    }
+  };
+
   const [businessName, setBusinessName] = useState('');
   const [informalName, setInformalName] = useState('');
   const [address, setAddress] = useState('');
@@ -101,7 +123,10 @@ function FarmInfo() {
             <ArrowLeftLogo />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Verification')}
+            onPress={() => {
+              saveFarmInfo();
+              navigation.navigate('Verification');
+            }}
             style={styles.continueButton}>
             <Text style={styles.continueButtonText}>Continue</Text>
           </TouchableOpacity>
