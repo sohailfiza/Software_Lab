@@ -1,89 +1,98 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Button,
-  Alert,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
 import {useNavigation} from '@react-navigation/native';
 import CameraLogo from '../../assets/svg/camera.svg';
+import CloseLogo from '../../assets/svg/close.svg';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
 function Verification() {
   const navigation = useNavigation();
-
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const pickDocument = async () => {
+  const uploadFileOnPressHandler = async () => {
     try {
-      const result = await DocumentPicker.pick({
+      const pickedFile = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles],
       });
 
-      const fileSize = await RNFS.stat(result.uri);
-      const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
+      console.log('pickedFile', pickedFile);
 
-      if (fileSize.size > maxSize) {
-        Alert.alert(
-          'File Size Limit Exceeded',
-          'Please select a file up to 5 MB.',
-        );
-      } else {
-        setSelectedFile(result);
-      }
+      const localFilePath = `${RNFS.DocumentDirectoryPath}/${pickedFile.name}`;
+
+      const fileContent = await RNFS.readFile(pickedFile.uri, 'base64');
+
+      await RNFS.writeFile(localFilePath, fileContent, 'base64');
+      console.log('File saved to', localFilePath);
+
+      setSelectedFile(pickedFile);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        // User cancelled the document picker
+        console.log('User canceled the picker', err);
       } else {
+        console.log('Error in file picker', err);
         throw err;
       }
-    }
-  };
-
-  const uploadFile = () => {
-    if (selectedFile) {
-      // File upload logic goes here
-      Alert.alert(
-        'File Uploaded',
-        `File ${selectedFile.name} has been uploaded successfully.`,
-      );
-    } else {
-      Alert.alert('No File Selected', 'Please select a file to upload.');
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
-        <Text style={[styles.title, styles.marginLeft30]}>FarmerEats</Text>
-        <Text style={[styles.subtitle, styles.marginLeft30]}>
+        <Text style={[styles.title, {marginHorizontal: 30}]}>FarmerEats</Text>
+        <Text style={[styles.subtitle, {marginHorizontal: 30}]}>
           Signup 3 of 4
         </Text>
-        <Text style={[styles.message, styles.marginLeft30]}>Verification</Text>
-        <Text style={[styles.description, styles.marginLeft30]}>
+        <Text style={[styles.message, {marginHorizontal: 30}]}>
+          Verification
+        </Text>
+        <Text style={[styles.description, {marginHorizontal: 30}]}>
           Attach proof of Department of Agriculture registrations i.e. Florida
           Fresh, USDA Approved, USDA Organic
         </Text>
       </View>
       <View style={styles.form}>
         <View style={styles.proofContainer}>
-          <Text style={[styles.proofText, styles.marginLeft30]}>
+          <Text style={[styles.proofText, {marginHorizontal: 30}]}>
             Attach proof of registration
           </Text>
-          <TouchableOpacity style={styles.cameraButton}>
+          <TouchableOpacity
+            style={styles.cameraButton}
+            onPress={async () => {
+              uploadFileOnPressHandler(true);
+            }}>
             <CameraLogo />
           </TouchableOpacity>
         </View>
-        <View>
-          <Button title="Pick Document" onPress={pickDocument} />
-          {selectedFile && <Text>Selected File: {selectedFile.name}</Text>}
-          <Button title="Upload File" onPress={uploadFile} />
-        </View>
+        {selectedFile && (
+          <View
+            style={{
+              width: '90%',
+              height: 48,
+              backgroundColor: '#0000001A',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderRadius: 8,
+              marginVertical: 20,
+              flexDirection: 'row',
+              paddingHorizontal: 15,
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 14,
+                fontWeight: '400',
+                fontFamily: 'Be Vietnam',
+                lineHeight: 20.45,
+                textDecorationLine: 'underline',
+              }}>
+              {selectedFile.name}
+            </Text>
+            <CloseLogo />
+          </View>
+        )}
         <View style={styles.navigationContainer}>
           <TouchableOpacity
             onPress={() => navigation.navigate('FarmInfo')}
@@ -105,6 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   welcomeContainer: {
     alignItems: 'flex-start',
@@ -117,9 +127,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23.38,
     color: '#000',
-  },
-  marginLeft30: {
-    marginLeft: 30,
   },
   subtitle: {
     color: 'grey',
@@ -158,6 +165,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'space-between',
     marginTop: 80,
+    // backgroundColor: 'red',
   },
   proofText: {
     color: 'black',
@@ -165,7 +173,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontFamily: 'Be Vietnam',
     lineHeight: 20.45,
-    marginTop: 30,
+    marginTop: 20,
   },
   cameraButton: {
     width: 55,

@@ -14,6 +14,7 @@ import LocationPinLogo from '../../assets/svg/locationPin.svg';
 import DownArrowLogo from '../../assets/svg/downArrow.svg';
 import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function FarmInfo() {
   const navigation = useNavigation();

@@ -28,17 +28,17 @@ function Welcome() {
           email,
           phone: number,
           password,
-          business_name: null,
-          informal_name: null,
-          address: null,
-          city: null,
-          state: null,
-          zip_code: null,
-          registration_hours: null,
-          business_hours: null,
-          device_token: null,
+          business_name: '',
+          informal_name: '',
+          address: '',
+          city: '',
+          state: '',
+          zip_code: '',
+          registration_hours: '',
+          business_hours: '',
+          device_token: '',
           type: 'email/facebook/google/apple',
-          social_id: null,
+          social_id: '',
         }),
       );
       console.log('Data successfully saved');
@@ -50,7 +50,7 @@ function Welcome() {
   const loadData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('userData');
-      if (jsonValue != null) {
+      if (jsonValue != '') {
         const data = JSON.parse(jsonValue);
         setName(data.name);
         setEmail(data.email);
@@ -133,7 +133,6 @@ function Welcome() {
           Signup 1 of 4
         </Text>
         <Text style={[styles.message, styles.marginLeft30]}>Welcome!</Text>
-
         <View style={styles.authIcons}>
           <TouchableOpacity style={styles.icon}>
             <GoogleLogo />
