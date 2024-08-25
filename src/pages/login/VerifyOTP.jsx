@@ -5,13 +5,15 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 
 function VerifyOTP() {
   const navigation = useNavigation();
-  const [otp, setOtp] = useState(['', '', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
 
   const handleChange = (text, index) => {
@@ -22,6 +24,39 @@ function VerifyOTP() {
       if (text && index < otp.length - 1) {
         inputRefs.current[index + 1].focus();
       }
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otpValue = otp.join('');
+
+    if (!otpValue) {
+      Alert.alert('Error', 'OTP cannot be empty.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'https://sowlab.com/assignment/user/verify-otp',
+        {otp: otpValue},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const result = response.data;
+
+      if (result.success === 'true') {
+        Alert.alert('Success', result.message);
+        navigation.navigate('ResetPassword');
+      } else {
+        Alert.alert('Failed', result.message);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to verify OTP. Please try again later.');
+      console.error('Error:', error);
     }
   };
 
@@ -63,10 +98,7 @@ function VerifyOTP() {
               justifyContent: 'center',
             },
           ]}
-          onPress={() => {
-            otp.join('');
-            navigation.navigate('ResetPassword');
-          }}>
+          onPress={handleVerifyOtp}>
           <Text
             style={{
               color: 'white',
@@ -89,6 +121,21 @@ function VerifyOTP() {
               color: '#000',
             }}>
             Resend Code
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{marginVertical: 40}}
+          onPress={() => navigation.navigate('ResetPassword')}>
+          <Text
+            style={{
+              color: 'grey',
+              fontWeight: '400',
+              fontFamily: 'Be Vietnam',
+              fontSize: 14,
+              lineHeight: 26.3,
+              textDecorationLine: 'underline',
+            }}>
+            Test Route - Navigate to Reset Password
           </Text>
         </TouchableOpacity>
       </View>

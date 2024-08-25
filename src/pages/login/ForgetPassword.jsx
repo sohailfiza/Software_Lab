@@ -5,15 +5,43 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 import PhoneLogo from '../../assets/svg/phone.svg';
 
 function ForgetPassword() {
   const navigation = useNavigation();
-
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handelForget = async () => {
+    try {
+      const response = await axios.post(
+        'https://sowlab.com/assignment/user/forget-password',
+        {mobile: phoneNumber},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const result = response.data;
+
+      if (result.success === 'true') {
+        Alert.alert('Success', result.message);
+        navigation.navigate('VerifyOTP');
+      } else {
+        Alert.alert('Failed', result.message);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send OTP. Please try again later.');
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
@@ -45,6 +73,7 @@ function ForgetPassword() {
             value={phoneNumber}
             placeholder="Phone Number"
             placeholderTextColor={'#0000004D'}
+            keyboardType="phone-pad"
           />
         </View>
 
@@ -58,7 +87,7 @@ function ForgetPassword() {
               justifyContent: 'center',
             },
           ]}
-          onPress={() => navigation.navigate('VerifyOTP')}>
+          onPress={handelForget}>
           <Text
             style={{
               color: 'white',
@@ -68,6 +97,20 @@ function ForgetPassword() {
               lineHeight: 26.3,
             }}>
             Send Code
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('VerifyOTP')}>
+          <Text
+            style={{
+              color: 'grey',
+              fontWeight: '400',
+              fontFamily: 'Be Vietnam',
+              fontSize: 14,
+              lineHeight: 26.3,
+              textDecorationLine: 'underline',
+              marginVertical: 40,
+            }}>
+            Test Route - Navigate to Verify OTP
           </Text>
         </TouchableOpacity>
       </View>

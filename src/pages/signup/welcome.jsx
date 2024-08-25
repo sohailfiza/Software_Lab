@@ -37,9 +37,10 @@ function Welcome() {
           registration_proof: '',
           registration_hours: '',
           business_hours: '',
-          device_token: '',
+          role: 'farmer',
+          device_token: '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx',
           type: 'email/facebook/google/apple',
-          social_id: '',
+          social_id: '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx',
         }),
       );
       console.log('Data successfully saved');
@@ -212,6 +213,8 @@ function Welcome() {
                 saveData();
                 navigation.navigate('FarmInfo');
               }
+              // saveData();
+              // navigation.navigate('FarmInfo');
             }}
             style={styles.continueButton}>
             <Text style={styles.continueButtonText}>Continue</Text>

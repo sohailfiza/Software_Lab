@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TagLogo from '../../assets/svg/tag.svg';
@@ -20,6 +21,18 @@ function FarmInfo() {
   const navigation = useNavigation();
 
   const saveFarmInfo = async () => {
+    if (
+      !businessName ||
+      !informalName ||
+      !address ||
+      !city ||
+      !state ||
+      !pinCode
+    ) {
+      Alert.alert('Validation Error', 'All fields are required.');
+      return;
+    }
+
     try {
       const existingData = await AsyncStorage.getItem('newUserData');
       const jsonValue = existingData != null ? JSON.parse(existingData) : {};
@@ -126,7 +139,16 @@ function FarmInfo() {
           <TouchableOpacity
             onPress={() => {
               saveFarmInfo();
-              navigation.navigate('Verification');
+              if (
+                businessName &&
+                informalName &&
+                address &&
+                city &&
+                state &&
+                pinCode
+              ) {
+                navigation.navigate('Verification');
+              }
             }}
             style={styles.continueButton}>
             <Text style={styles.continueButtonText}>Continue</Text>

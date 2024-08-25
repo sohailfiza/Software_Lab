@@ -25,7 +25,6 @@ function Verification() {
 
       setSelectedFile(pickedFile);
 
-      // Save the document path to AsyncStorage
       const existingData = await AsyncStorage.getItem('newUserData');
       const jsonValue = existingData != null ? JSON.parse(existingData) : {};
 
@@ -44,6 +43,14 @@ function Verification() {
         throw err;
       }
     }
+  };
+
+  const handleContinue = () => {
+    if (!selectedFile) {
+      Alert.alert('Validation Error', 'Please attach a proof of registration.');
+      return;
+    }
+    navigation.navigate('BusinessHours');
   };
 
   return (
@@ -106,8 +113,7 @@ function Verification() {
             <ArrowLeftLogo />
           </TouchableOpacity>
           <TouchableOpacity
-            // onPress={handleContinue}
-            onPress={() => navigation.navigate('BusinessHours')}
+            onPress={handleContinue}
             style={styles.continueButton}>
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>

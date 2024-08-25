@@ -15,6 +15,38 @@ function ResetPassword() {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Password and confirm password do not match.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        'https://sowlab.com/assignment/user/reset-password',
+        {
+          token: '895642',
+          password,
+          cpassword: confirmPassword,
+        },
+      );
+
+      if (response.data.success === 'true') {
+        Alert.alert('Success', response.data.message);
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Error', response.data.message);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
@@ -73,6 +105,8 @@ function ResetPassword() {
         </View>
 
         <TouchableOpacity
+          onPress={handleSubmit}
+          disabled={isLoading}
           style={[
             styles.submitButton,
             {
@@ -90,7 +124,7 @@ function ResetPassword() {
               fontSize: 18,
               lineHeight: 26.3,
             }}>
-            Submit
+            {isLoading ? 'Submitting...' : 'Submit'}
           </Text>
         </TouchableOpacity>
       </View>

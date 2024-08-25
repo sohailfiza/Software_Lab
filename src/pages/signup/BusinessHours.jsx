@@ -11,8 +11,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import ArrowLeftLogo from '../../assets/svg/arrowLeft.svg';
+import axios from 'axios';
 
 function BusinessHours() {
+  const navigation = useNavigation();
   const days = [
     {full: 'Monday', short: 'mon'},
     {full: 'Tuesday', short: 'tue'},
@@ -55,30 +57,65 @@ function BusinessHours() {
     });
   }, []);
 
-  const navigation = useNavigation();
-
   const handleContinue = async () => {
     try {
-      // Retrieve existing data
       const existingData = await AsyncStorage.getItem('newUserData');
-      const jsonValue = existingData != null ? JSON.parse(existingData) : {};
-
-      // Update the business_hours
+      const userData = existingData ? JSON.parse(existingData) : {};
       const updatedData = {
-        ...jsonValue,
+        ...userData,
         business_hours: selectedHours,
       };
 
-      // Save the updated data back to AsyncStorage
-      await AsyncStorage.setItem('newUserData', JSON.stringify(updatedData));
+      const response = await axios.post(
+        'https://sowlab.com/assignment/user/register',
+        updatedData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
-      // Log the saved data
-      console.log('Updated User Data:', updatedData);
-
-      // Navigate to the next screen
-      navigation.navigate('Confirmation', {selectedHours});
+      if (response.data.success) {
+        Alert.alert('Registration Successful', response.data.message);
+        navigation.navigate('Confirmation');
+      } else {
+        switch (response.data.message) {
+          case 'All fields are required.':
+            Alert.alert('Registration Failed', 'All fields are required.');
+            break;
+          case 'Access denied! unauthorized user.':
+            Alert.alert(
+              'Registration Failed',
+              'Access denied! Unauthorized user.',
+            );
+            break;
+          case 'Server error while registering.':
+            Alert.alert(
+              'Registration Failed',
+              'Server error while registering.',
+            );
+            break;
+          case 'Email already exists.':
+            Alert.alert('Registration Failed', 'Email already exists.');
+            break;
+          case 'Registration failed.':
+            Alert.alert('Registration Failed', 'Registration failed.');
+            break;
+          case 'Invalid token.':
+            Alert.alert('Registration Failed', 'Invalid token.');
+            break;
+          case 'Social id required.':
+            Alert.alert('Registration Failed', 'Social ID required.');
+            break;
+          default:
+            Alert.alert('Registration Failed', 'An unknown error occurred.');
+            break;
+        }
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save business hours');
+      Alert.alert('Error', 'Failed to register. Please try again later.');
+      console.error('Registration error:', error);
     }
   };
 
@@ -120,6 +157,17 @@ function BusinessHours() {
         ))}
         <View style={styles.blankContainer} />
       </ScrollView>
+      <View
+        style={{
+          width: '94%',
+          height: 1,
+          backgroundColor: '#00000033',
+          position: 'absolute',
+          top: 710,
+          left: 15,
+          zIndex: 999,
+        }}
+      />
       <View style={styles.navigationContainer}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Verification')}
@@ -227,7 +275,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     bottom: 0,
     backgroundColor: 'white',
+    backgroundColor: '#FFFFFFE6',
     height: 200,
+    zIndex: 99,
   },
   backButton: {
     alignItems: 'center',
