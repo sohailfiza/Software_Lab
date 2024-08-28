@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Software_Lab_Assignment</string>
+    <string name="facebook_app_name">523762993455052</string>
+    <string name="facebook_app_id">523762993455052</string>
+    <string name="facebook_client_token">523762993455052</string>
+    <string name="fb_login_protocol_scheme">fb523762993455052</string>
 </resources>

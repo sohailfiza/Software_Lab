@@ -17,10 +17,30 @@ import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
+import {
+  AccessToken,
+  LoginManager,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
+
 function Login() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [userName, setUserName] = useState('');
+  const [token, setToken] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+
+  setTimeout(() => {
+    navigation.navigate('Confirmation');
+  }, 5000);
 
   const handleLogin = async () => {
     const loginDetails = {
@@ -96,6 +116,86 @@ function Login() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    GoogleSignin.configure({
+      androidClientId:
+        '529098423777-r14991togjkfpjbiub9q2sri82o6jb42.apps.googleusercontent.com',
+    });
+    GoogleSignin.hasPlayServices()
+      .then(hasPlayService => {
+        if (hasPlayService) {
+          GoogleSignin.signIn()
+            .then(userInfo => {
+              Alert.alert('Logged in using Google Account');
+              navigation.navigate('Confirmation');
+              console.log(JSON.stringify(userInfo));
+            })
+            .catch(e => {
+              console.log('ERROR IS: ' + JSON.stringify(e));
+            });
+        }
+      })
+      .catch(e => {
+        console.log('ERROR IS: ' + JSON.stringify(e));
+      });
+  };
+
+  const getResponseInfo = (error, result) => {
+    if (error) {
+      Alert.alert('Error fetching data', error.toString());
+    } else {
+      console.log(JSON.stringify(result));
+      setUserName('Welcome ' + result.name);
+      setToken('User Token: ' + result.id);
+      setProfilePic(result.picture.data.url);
+    }
+  };
+
+  // const onLogout = () => {
+  //   setUserName('');
+  //   setToken('');
+  //   setProfilePic('');
+  // };
+
+  const handleFacebookLogin = () => {
+    LoginManager.logInWithPermissions(['public_profile', 'email'])
+      .then(result => {
+        if (result.isCancelled) {
+          Alert.alert('Login Cancelled', 'User cancelled the login.');
+        } else {
+          AccessToken.getCurrentAccessToken()
+            .then(data => {
+              if (data) {
+                console.log(data.accessToken.toString());
+                const processRequest = new GraphRequest(
+                  '/me?fields=name,picture.type(large)',
+                  null,
+                  getResponseInfo,
+                );
+                new GraphRequestManager().addRequest(processRequest).start();
+              } else {
+                Alert.alert(
+                  'No Access Token',
+                  'Failed to retrieve access token.',
+                );
+              }
+            })
+            .catch(error => {
+              Alert.alert(
+                'Error',
+                'Error retrieving access token: ' + error.message,
+              );
+            });
+        }
+      })
+      .catch(error => {
+        Alert.alert(
+          'Login Error',
+          'Error during Facebook login: ' + error.message,
+        );
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
@@ -140,13 +240,13 @@ function Login() {
         <Text>or login with</Text>
       </View>
       <View style={styles.authIcons}>
-        <TouchableOpacity style={styles.icon}>
+        <TouchableOpacity style={styles.icon} onPress={handleGoogleLogin}>
           <GoogleLogo />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon}>
           <AppleLogo />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.icon}>
+        <TouchableOpacity style={styles.icon} onPress={handleFacebookLogin}>
           <FacebookLogo />
         </TouchableOpacity>
       </View>
